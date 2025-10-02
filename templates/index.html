@@ -88,6 +88,29 @@
             color: #ffa500;
             font-weight: bold;
         }
+        .summary-cell {
+            max-width: 400px;
+            word-wrap: break-word;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .ip-cell {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #87CEEB;
+        }
+        .proto-cell {
+            font-weight: bold;
+            text-align: center;
+        }
+        .geo-cell {
+            font-size: 12px;
+            color: #98FB98;
+        }
+        .packet-row:hover .summary-cell {
+            background-color: #2a2a2a;
+        }
     </style>
 </head>
 <body>
@@ -156,15 +179,17 @@
 
                 if (data.packets.length > 0) {
                     data.packets.forEach(packet => {
-                        let statusClass = packet.vt_status === "Malicious" ? "status-malicious" :
-                                          packet.vt_status === "Safe" ? "status-safe" : "status-unknown";
+                        let statusClass = "";
+                        if (packet.vt_status.includes("⚠️")) statusClass = "status-malicious";
+                        else if (packet.vt_status.includes("✅")) statusClass = "status-safe";
+                        else statusClass = "status-unknown";
 
-                        let row = `<tr>
-                            <td>${packet.summary}</td>
-                            <td>${packet.src}</td>
-                            <td>${packet.geolocation}</td>
-                            <td>${packet.dst}</td>
-                            <td>${packet.proto}</td>
+                        let row = `<tr class="packet-row">
+                            <td class="summary-cell">${packet.summary}</td>
+                            <td class="ip-cell">${packet.src}</td>
+                            <td class="geo-cell">${packet.geolocation}</td>
+                            <td class="ip-cell">${packet.dst}</td>
+                            <td class="proto-cell">${packet.proto}</td>
                             <td class="${statusClass}">${packet.vt_status}</td>
                         </tr>`;
                         outputTable.innerHTML += row;
